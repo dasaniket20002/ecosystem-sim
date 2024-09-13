@@ -1,39 +1,48 @@
 package com.ecosystem;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.ecosystem.creatures.Herbivore;
+import com.ecosystem.creatures.HerbivoreSpawnner;
 import com.ecosystem.creatures.abstracts.Organism;
 
 public class Logic {
-	
-	private Organism organism;	
-	
+
+	private List<Organism> organisms;
+
 	public Logic() {
 		start();
 	}
-	
+
 	public void start() {
-		organism = new Herbivore();
+		HerbivoreSpawnner herbivoreSpawnner = new HerbivoreSpawnner();
+		List<Herbivore> herbivores = herbivoreSpawnner.spawnEntities();
+		
+		organisms = new ArrayList<>();
+		organisms.addAll(herbivores);
 	}
-	
+
 	public void update(float delta) {
-		
 	}
-	
+
 	public void fixedUpdate(float delta) {
-		organism.move(delta);
+		for (Organism organism : organisms) {
+			organism.fixedUpdate(delta);
+		}
 	}
-	
+
 	public void render(SpriteBatch batch) {
-	organism.render(batch);
+		for (Organism organism : organisms) {
+			organism.render(batch);
+		}
 	}
-	
-	public void resize(float width, float height) {
-		
-	}
-	
+
 	public void dispose() {
-		organism.dispose();
+		for (Organism organism : organisms) {
+			organism.dispose();
+		}
 	}
-	
+
 }

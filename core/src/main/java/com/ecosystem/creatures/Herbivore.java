@@ -6,11 +6,15 @@ import com.badlogic.gdx.math.Vector2;
 import com.ecosystem.creatures.abstracts.Organism;
 
 public class Herbivore extends Organism {
-	
+
 	public Herbivore() {
 		super();
 	}
 	
+	public Herbivore(Vector2 position) {
+		super(position);
+	}
+
 	public Herbivore(Vector2 position, Vector2 velocity) {
 		super(position, velocity);
 	}
@@ -21,16 +25,20 @@ public class Herbivore extends Organism {
 	}
 	
 	@Override
-	public void move(float delta) {
+	public void update(float delta) {
+	}
+	
+	@Override
+	public void fixedUpdate(float delta) {
 		velocity.nor();
-		position = position.add(velocity.scl(delta));
+		position = position.add(velocity.scl(delta * speed));
 	}
 
 	@Override
 	public void render(SpriteBatch batch) {
 		batch.draw(texture, position.x, position.y, 16, 24.8f);
 	}
-	
+
 	@Override
 	public void dispose() {
 		texture.dispose();

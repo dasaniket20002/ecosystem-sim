@@ -1,38 +1,27 @@
 package com.ecosystem.creatures.abstracts;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
-public abstract class Organism {
-	protected Vector2 position;
+public abstract class Organism extends Entity {
+	protected float speed;
 	protected Vector2 velocity;
 	
-	protected Texture texture;
-	
 	public Organism() {
-		position = new Vector2();
+		super();
 		velocity = new Vector2();
-		
-		initTexture();
+		speed = 0f;
 	}
+	
+	public Organism(Vector2 position) {
+		super(position);
+		this.velocity = new Vector2();
+	}
+
 	public Organism(Vector2 position, Vector2 velocity) {
-		this.position = position;
+		super(position);
 		this.velocity = velocity;
-		
-		initTexture();
 	}
 	
-	public abstract void initTexture();
-	
-	public Vector2 getPosition() {
-		return position;
-	}
-
-	protected void setPosition(Vector2 position) {
-		this.position = position;
-	}
-
 	public Vector2 getVelocity() {
 		return velocity;
 	}
@@ -40,14 +29,12 @@ public abstract class Organism {
 	protected void setVelocity(Vector2 velocity) {
 		this.velocity = velocity;
 	}
-
-	public Texture getTexture() {
-		return texture;
+	
+	public float getSpeed() {
+		return speed;
 	}
-	
-	public abstract void move(float delta);
-	
-	public abstract void render(SpriteBatch batch);
-	
-	public abstract void dispose();
+
+	protected void setSpeed(float speed) {
+		this.speed = speed;
+	}
 }
