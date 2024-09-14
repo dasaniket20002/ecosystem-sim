@@ -5,12 +5,13 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.ecosystem.utils.Consts;
 
 public class TopDownCamera extends OrthographicCamera {
 
 	private static final float LERP = 0.1f;
 
-	private static final float SPEED = 20f;
+	private static final float SPEED = 40f;
 	private static final float ROTATION_SPEED = 20f;
 	private static final float ZOOM_SPEED = 2f;
 
@@ -22,6 +23,9 @@ public class TopDownCamera extends OrthographicCamera {
 
 	private Vector2 followPosition;
 	private float followZoom;
+	
+	private float worldSizeClampX;
+	private float worldSizeClampY;
 
 	public TopDownCamera(float viewportWidth, float viewportHeight) {
 		super();
@@ -41,6 +45,9 @@ public class TopDownCamera extends OrthographicCamera {
 		this.rotationSpeed = ROTATION_SPEED;
 		this.speed = SPEED;
 		this.zoomSpeed = ZOOM_SPEED;
+		
+		this.worldSizeClampX = Consts.WORLD_SIZE_X * 0.5f + Consts.WORLD_SIZE_X;
+		this.worldSizeClampY = Consts.WORLD_SIZE_Y * 0.5f + Consts.WORLD_SIZE_Y;
 	}
 
 	public TopDownCamera onResize(int width, int height) {
@@ -69,10 +76,10 @@ public class TopDownCamera extends OrthographicCamera {
 		}
 
 		if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-			followPosition.x += speed * delta;
+			followPosition.x -= speed * delta;
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-			followPosition.x -= speed * delta;
+			followPosition.x += speed * delta;
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.S)) {
 			followPosition.y -= speed * delta;
@@ -98,6 +105,9 @@ public class TopDownCamera extends OrthographicCamera {
 			this.speed = SPEED;
 			this.zoomSpeed = ZOOM_SPEED;
 		}
+		
+		followPosition.x = MathUtils.clamp(followPosition.x, -worldSizeClampX , worldSizeClampX);
+		followPosition.y = MathUtils.clamp(followPosition.y, -worldSizeClampY , worldSizeClampY);
 
 		zoom = MathUtils.clamp(zoom, 0.1f, 1000f);
 	}
