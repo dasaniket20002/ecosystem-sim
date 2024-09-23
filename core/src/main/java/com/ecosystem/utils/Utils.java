@@ -1,6 +1,7 @@
 package com.ecosystem.utils;
 
 import com.badlogic.gdx.math.Vector2;
+import com.ecosystem.entities.Food;
 import com.ecosystem.entities.abstracts.Entity;
 import com.ecosystem.entities.enums.EntityType;
 import com.ecosystem.organisms.herbivore.Herbivore;
@@ -33,13 +34,14 @@ public class Utils {
 	public static float distSq(Vector2 v1, Vector2 v2) {
 		return distSq(v1.x, v1.y, v2.x, v2.y);
 	}
-	
-	public static Entity createEntityOfType(EntityType entityType, Vector2 position, float rotation) {
+
+	public static Entity createEntityOfType(EntityType entityType, Vector2 position, float rotation, Vector2 scale) {
 		switch (entityType) {
 		case HERVIBORE:
-			return new Herbivore(position, rotation);
+			return new Herbivore(position, rotation, scale);
 		case CARNIVORE:
 		case FOOD:
+			return new Food(position, rotation, scale);
 		default:
 		}
 
@@ -47,6 +49,6 @@ public class Utils {
 	}
 
 	public static Entity createEntityOfType(EntityType entityType) {
-		return createEntityOfType(entityType, new Vector2(), 0f);
+		return createEntityOfType(entityType, new Vector2(), 0f, new Vector2(1f, 1f));
 	}
 }

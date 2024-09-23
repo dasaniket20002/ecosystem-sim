@@ -9,6 +9,14 @@ import com.ecosystem.utils.Consts;
 
 public class TopDownCamera extends OrthographicCamera {
 
+	private static TopDownCamera _instance = null;
+
+	public static TopDownCamera getInstance() {
+		if (_instance == null)
+			_instance = new TopDownCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		return _instance;
+	}
+
 	private static final float LERP = 0.1f;
 
 	private static final float SPEED = 40f;
@@ -23,11 +31,11 @@ public class TopDownCamera extends OrthographicCamera {
 
 	private Vector2 followPosition;
 	private float followZoom;
-	
+
 	private float worldSizeClampX;
 	private float worldSizeClampY;
 
-	public TopDownCamera(float viewportWidth, float viewportHeight) {
+	protected TopDownCamera(float viewportWidth, float viewportHeight) {
 		super();
 
 		this.viewportWidth = viewportWidth;
@@ -45,9 +53,9 @@ public class TopDownCamera extends OrthographicCamera {
 		this.rotationSpeed = ROTATION_SPEED;
 		this.speed = SPEED;
 		this.zoomSpeed = ZOOM_SPEED;
-		
-		this.worldSizeClampX = Consts.WORLD_SIZE_X * 0.5f + Consts.WORLD_SIZE_X;
-		this.worldSizeClampY = Consts.WORLD_SIZE_Y * 0.5f + Consts.WORLD_SIZE_Y;
+
+		this.worldSizeClampX = Consts.getInstance().WORLD_SIZE_X * 0.5f + Consts.getInstance().WORLD_SIZE_X;
+		this.worldSizeClampY = Consts.getInstance().WORLD_SIZE_Y * 0.5f + Consts.getInstance().WORLD_SIZE_Y;
 	}
 
 	public TopDownCamera onResize(int width, int height) {
@@ -105,9 +113,9 @@ public class TopDownCamera extends OrthographicCamera {
 			this.speed = SPEED;
 			this.zoomSpeed = ZOOM_SPEED;
 		}
-		
-		followPosition.x = MathUtils.clamp(followPosition.x, -worldSizeClampX , worldSizeClampX);
-		followPosition.y = MathUtils.clamp(followPosition.y, -worldSizeClampY , worldSizeClampY);
+
+		followPosition.x = MathUtils.clamp(followPosition.x, -worldSizeClampX, worldSizeClampX);
+		followPosition.y = MathUtils.clamp(followPosition.y, -worldSizeClampY, worldSizeClampY);
 
 		zoom = MathUtils.clamp(zoom, 0.1f, 1000f);
 	}

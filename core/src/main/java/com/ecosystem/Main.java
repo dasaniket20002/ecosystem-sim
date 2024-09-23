@@ -17,8 +17,6 @@ import com.ecosystem.utils.Consts;
  */
 public class Main extends ApplicationAdapter {
 	private SpriteBatch batch;
-	private Logic logic;
-	private TopDownCamera camera;
 
 	private AtomicBoolean running = new AtomicBoolean(true);
 	private ExecutorService physicsExecutor;
@@ -26,8 +24,7 @@ public class Main extends ApplicationAdapter {
 	@Override
 	public void create() {
 		batch = new SpriteBatch();
-		logic = new Logic();
-		camera = new TopDownCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		Consts.getInstance();
 
 		physicsExecutor = Executors.newSingleThreadExecutor();
 		physicsExecutor.submit(() -> {
@@ -41,9 +38,9 @@ public class Main extends ApplicationAdapter {
 
 				accumulator += deltaTime;
 
-				while (accumulator >= Consts.TIME_STEP) {
-					physicsUpdate(Consts.TIME_STEP);
-					accumulator -= Consts.TIME_STEP;
+				while (accumulator >= Consts.getInstance().TIME_STEP) {
+					physicsUpdate(Consts.getInstance().TIME_STEP);
+					accumulator -= Consts.getInstance().TIME_STEP;
 				}
 
 				try {
@@ -55,45 +52,38 @@ public class Main extends ApplicationAdapter {
 		});
 	}
 
-	public void setCamera(TopDownCamera camera) {
-		this.camera = (TopDownCamera) camera;
-	}
-
 	@Override
 	public void render() {
-		camera.handleInput(Gdx.graphics.getDeltaTime());
-		logic.update(Gdx.graphics.getDeltaTime());
-		update();
-	}
-
-	public void physicsUpdate(float delta) {
-		logic.fixedUpdate(delta);
-	}
-
-	public void update() {
-		camera.update();
-		batch.setProjectionMatrix(camera.combined);
-
-		ScreenUtils.clear(0.305f, 0.701f, 0f, 1f);
-
+		TopDownCamera.getInstance().handleInput(Gdx.graphics.getDeltaTime());
+		TopDownCamera.getInstance().update();
+		
+		Logic.getInstance().update(Gdx.graphics.getDeltaTime());
+		
+		ScreenUtils.clear(0.8f, 0.8f, 0.8f, 1f);
+		
+		batch.setProjectionMatrix(TopDownCamera.getInstance().combined);
 		batch.begin();
 
-		logic.render(batch);
+		Logic.getInstance().render(batch);
 
 		batch.end();
 	}
 
+	public void physicsUpdate(float delta) {
+		Logic.getInstance().fixedUpdate(delta);
+	}
+
 	@Override
 	public void resize(int width, int height) {
-		camera.onResize(width, height);
+		TopDownCamera.getInstance().onResize(width, height);
 	}
 
 	@Override
 	public void dispose() {
 		running.set(false);
 
+		Logic.getInstance().dispose();
 		batch.dispose();
-		logic.dispose();
 
 		physicsExecutor.shutdown();
 	}

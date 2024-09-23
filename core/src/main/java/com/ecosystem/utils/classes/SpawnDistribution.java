@@ -1,6 +1,7 @@
 package com.ecosystem.utils.classes;
 
 import com.ecosystem.entities.enums.EntityType;
+import com.ecosystem.utils.Consts;
 
 public class SpawnDistribution {
 	public EntityType entityType;
@@ -22,5 +23,9 @@ public class SpawnDistribution {
 			if(spawnDistribution.entityType == entityType) return spawnDistribution;
 		}
 		return null;
+	}
+	
+	public static SpawnDistribution getSpawnDistributionByEntityType(EntityType entityType) {
+		return getSpawnDistributionByEntityType(Consts.getInstance().SPAWN_DISTRIBUTIONS, entityType);
 	}
 }

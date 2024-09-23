@@ -1,42 +1,54 @@
 package com.ecosystem;
 
-import java.util.List;
-
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.ecosystem.distribution.spawnner.EntitySpawnner;
+import com.ecosystem.distribution.entityDistribution.EntityDistribution;
 import com.ecosystem.entities.abstracts.Entity;
+import com.ecosystem.threads.EntityGeneratorThread;
 
 public class Logic {
 
-	private List<Entity> entities;
+	private static Logic _instance = null;
 
-	public Logic() {
+	public static Logic getInstance() {
+		if (_instance == null)
+			_instance = new Logic();
+		return _instance;
+	}
+
+	private EntityDistribution distributionGenerator;
+	EntityGeneratorThread entityGeneratorThread;
+
+	protected Logic() {
 		start();
 	}
 
 	public void start() {
-		entities = EntitySpawnner.getInstance().getEntities();
+		distributionGenerator = new EntityDistribution(System.currentTimeMillis(), 0.1f, 10000, 30);
+		entityGeneratorThread = new EntityGeneratorThread(distributionGenerator);
+		entityGeneratorThread.start();
 	}
 
 	public void update(float delta) {
+		distributionGenerator.getEntities().update(delta);
 	}
 
 	public void fixedUpdate(float delta) {
-		for (Entity entity : entities) {
-			entity.fixedUpdate(delta);
-		}
+
 	}
 
 	public void render(SpriteBatch batch) {
-		for (Entity entity : entities) {
+		for (Entity entity : distributionGenerator.getEntities().retrieveAll()) {
 			entity.render(batch);
 		}
 	}
 
 	public void dispose() {
-		for (Entity entity : entities) {
-			entity.dispose();
+		try {
+			entityGeneratorThread.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
+		distributionGenerator.dispose();
 	}
 
 }
